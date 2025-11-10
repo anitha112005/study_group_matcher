@@ -30,7 +30,7 @@ class CrewAIAgent:
         # Example (pseudo):
         # response = requests.post("https://api.crewai.example/run", headers={...}, json=context)
         # return response.json()
-        return {{ "note": "This is a stub — implement CrewAI API call here", "context_sample": context }}
+        return {"note": "This is a stub — implement CrewAI API call here", "context_sample": context}
 
     def suggest_groups(self, db_path, payload=None):
         # payload may include requested group size, objectives, etc.
