@@ -47,4 +47,10 @@ def agent_suggest():
     return jsonify(result)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Bind to the port provided by the environment (Render, Heroku, etc.)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    # Listen on all interfaces so the container/host can reach the app
+    host = os.environ.get("HOST", "0.0.0.0")
+    debug_flag = os.environ.get("FLASK_DEBUG", "") == "1"
+    app.run(debug=debug_flag, host=host, port=port)
