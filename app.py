@@ -2,14 +2,29 @@ from flask import Flask, request, jsonify, render_template
 from models import init_db, SessionLocal, Student, load_sample_students
 from matching import match_for_student
 from crewai_agent import CrewAIAgent
+import os
+import sys
 
 app = Flask(__name__)
-DB_PATH = "students.db"
+
+# Choose a writable DB path. On Windows (local dev) use a local file; on Linux/container (Render)
+# prefer a temp path which is writable in many PaaS environments.
+if os.name == "nt":
+    DB_PATH = os.environ.get("DATABASE_PATH", "students.db")
+else:
+    DB_PATH = os.environ.get("DATABASE_PATH", "/tmp/students.db")
+
+# Log DB path at startup so Render logs show where the app will write
+print(f"[startup] Using DB_PATH={DB_PATH}", file=sys.stderr)
 
 # initialize DB and load sample data if needed
-init_db(DB_PATH)
-# load_sample_students will not overwrite existing DB by default
-load_sample_students(DB_PATH, overwrite=False)
+try:
+    init_db(DB_PATH)
+    # load_sample_students will not overwrite existing DB by default
+    load_sample_students(DB_PATH, overwrite=False)
+except Exception as e:
+    # Print exception to stderr so it's visible in Render logs
+    print(f"[startup] Error initializing DB: {e}", file=sys.stderr)
 
 @app.route("/")
 def index():
