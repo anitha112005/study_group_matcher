@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Study Group Matcher — Demo</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Study Group Matcher — Demo</h1>
+    <small>Backend: Flask (port 5000)</small>
+  </header>
+
+  <div class="card">
+    <label for="student">Pick a student:</label>
+    <select id="student"></select>
+    <button id="go">Find Matches</button>
+  </div>
+
+  <div id="results"></div>
+
+<script>
+async function loadStudents(){
+  const r = await fetch("/api/students");
+  const list = await r.json();
+  const sel = document.getElementById("student");
+  sel.innerHTML = "";
+  list.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = `${s.id} — ${s.name} — ${s.courses.join(", ")}`;
+    sel.appendChild(opt);
+  });
+}
+
+async function findMatches(){
+  const id = document.getElementById("student").value;
+  const r = await fetch(`/api/match/${id}`);
+  const res = await r.json();
+  const out = document.getElementById("results");
+  out.innerHTML = "<h3>Top matches</h3>";
+  res.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<strong>${m.student.name}</strong> — score: ${m.score}
+      <div>Courses: ${m.student.courses.join(", ")}</div>
+      <div>GPA: ${m.student.gpa}</div>
+      <div>Availability: ${m.student.availability.join(", ")}</div>`;
+    out.appendChild(div);
+  });
+}
+
+document.getElementById("go").addEventListener("click", findMatches);
+loadStudents();
+</script>
+</body>
+</html>
