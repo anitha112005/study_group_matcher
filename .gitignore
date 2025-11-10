@@ -1,0 +1,32 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# SQLite DBs / local data
+students.db
+*.db
+*.sqlite3
+
+# Environment files
+.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+Thumbs.db
+.DS_Store
+
+# pytest
+.pytest_cache/
